@@ -1,0 +1,14 @@
+{
+  "name": "CommitTree",
+  "version": "1.0.0",
+  "description": "Node.js on Docker",
+  "author": "Kévin Naudin and Romain Bourg",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  }
+}
