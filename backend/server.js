@@ -2,7 +2,7 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-var node = require('./node');
+var node = require('./nodes');
 
 // Constants
 const PORT = 8080;
@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 
 app.post('/addnode', function(request, response){
   try{
-    console.log(request.body.data);
+    console.log("data: "+request.body.data);
     var new_node = new node(request.body.commit_message, request.body.data_name, request.body.data);
     console.log(new_node);
     response.send(new_node.toJSON());
