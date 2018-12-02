@@ -10,6 +10,11 @@ $(document).ready(function() {
 		event.preventDefault();
 		addNodeForm(graph);
 	}); 
+
+	$("#addBranchButton").on("click", function(event){
+		event.preventDefault();
+		addBranchForm(graph);
+	}); 
 	
 });
 
@@ -41,6 +46,8 @@ function createGraph()
 	graph.commit("coin");
 	graph.merge("crise", "master");
 	graph.merge("Developpement", "master");
+	graph.delete("Developpement");
+	graph.delete("crise");
 	graph.checkout("master");
 
 	return graph;
@@ -51,7 +58,7 @@ function addNodeForm(graph){
 	var data = {
 		data_name : $("#inputCommitName").val(),
 		commit_message: $("#inputCommitMessage").val(), 
-		commit_data : $("#inputCommitData").val()
+		data : $("#inputCommitData").val()
 	};
 
 	if(data.data_name != "" && data.commit_message != "" && data.commit_data != ""){
@@ -70,5 +77,18 @@ function addNodeForm(graph){
 		dataType: "json",
 		contentType: "application/json"
 	});
+	}
+}
+
+function addBranchForm(graph){
+	var data = {
+		branch_name : $("#inputBranchName").val(),
+	};
+	if(data.branch_name != "")
+	{
+		$("#addBranchForm")[0].reset();
+		console.log("ajout branch "+data.branch_name);
+		graph.addBranch(data.branch_name);
+		graph.refresh();
 	}
 }
