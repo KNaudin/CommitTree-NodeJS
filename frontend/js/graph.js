@@ -54,11 +54,12 @@ class Graph
 			var branch = this.data.branch(branchName);
 			this.branchList.push(branch);
 		}
-		
+
 	}
 
 	commit(msg="No text", sha1="", author="unknown"){
 		if(this.branchList.length)
+		{
 			var that = this;
 			this.data.commit({
 				sha1: sha1,
@@ -68,6 +69,7 @@ class Graph
 					that.eventClickOnCommit(commit);
 				}
 			});
+		}
 	}
 
 	checkout(branchName){
@@ -105,8 +107,8 @@ class Graph
 		if(branch)
 		{
 			branch.delete();
-			
-			this.branchList = this.branchList.filter(function(item) { 
+
+			this.branchList = this.branchList.filter(function(item) {
 			    return item !== branch
 			});
 		}
@@ -115,5 +117,5 @@ class Graph
 	refresh(){
 		this.data.render();
 	}
-		
+
 }
