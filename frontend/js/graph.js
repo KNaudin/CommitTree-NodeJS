@@ -58,12 +58,11 @@ class Graph
 
 	}
 
-	commit(msg="No text", sha1="", author="unknown"){
+	commit(msg="No text", sha1="", author="unknown", data=""){
 		if(this.branchList.length)
 		{
 			var that = this;
 			this.data.commit({
-				sha1: sha1,
 				message: msg,
 				author: author,
 				onClick: function(commit) {
@@ -79,7 +78,7 @@ class Graph
 		{
 			branch.checkout();
 			this.currentBranch = branchName;
-		}	
+		}
 	}
 
 	merge(branch, branchTo, mergeMessage="merge"){

@@ -33,7 +33,7 @@
   </div>
   <br /><br /><br />
   <div class="row">
-  	<div class="col-md-10">
+  	<div class="col-md-6">
 		<nav class="nav nav-tabs">
       <a class="nav-item nav-link active" href="#p1" data-toggle="tab">Branch</a>
 			<a class="nav-item nav-link" href="#p2" data-toggle="tab">Add commit</a>
@@ -66,14 +66,42 @@
           <label for="inputCommitData">Commit Data</label>
           <input type="text" class="form-control" id="inputCommitData" placeholder="Enter commit data" required> <br />
 
-          <button id="addNodeButton" class="btn btn-primary">Add commit</button>
+          <label for="inputCommitAuthor">Commit Author</label>
+          <input type="text" class="form-control" id="inputCommitAuthor" placeholder="Enter your name (optional)"> <br />
+
+          <button id="addNodeButton" class="btn btn-primary">Add commit</button><br />
+          <i>The commit will be added on the active branch defined under the tab "Branch"</i>
         </form>
       </div>
 
 			<div class="tab-pane" id="p3">
 				<h3>Commit</h3>
 					<div id="commitPanel">
-					<h2>Commit name: </h2><p id="commitPanel_name"></p>
+					<h2>Commit inspector</h2>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Name</td>
+                                <td id="commitPanel_name"></td>
+                            </tr>
+                            <tr>
+                                <td>Branch</td>
+                                <td id="commitPanel_branch"></td>
+                            </tr>
+                            <tr>
+                                <td>Date</td>
+                                <td id="commitPanel_date"></td>
+                            </tr>
+                            <tr>
+                                <td>SHA1</td>
+                                <td id="commitPanel_SHA1"></td>
+                            </tr>
+                            <tr>
+                                <td>Author</td>
+                                <td id="commitPanel_author"></td>
+                            </tr>
+                        </tbody>
+                    </table>
 				</div>
 			</div>
 
