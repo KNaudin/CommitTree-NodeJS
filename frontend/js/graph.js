@@ -35,6 +35,7 @@ class Graph
 
 		this.branchList = [];
 		this.clickOnCommitCallback = null;
+		this.currentBranch = "";
 	}
 
 	getBranchList(){
@@ -75,7 +76,10 @@ class Graph
 	checkout(branchName){
 		var branch = this.getBranch(branchName);
 		if(branch)
+		{
 			branch.checkout();
+			this.currentBranch = branchName;
+		}	
 	}
 
 	merge(branch, branchTo, mergeMessage="merge"){
