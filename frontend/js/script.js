@@ -39,11 +39,23 @@ function prepareFrontEnd(){
 		addBranchForm(graph);
 	});
 
+	$('body').on('click', '.checkoutButton', function(e) {
+	    var branchName = $(e.currentTarget).attr("checkoutName");
+		graph.checkout(branchName);
+		refreshPage(graph);
+	});
 
+	refreshPage(graph);
+}
+
+function refreshPage(graph){
+	$("#tableBranch").empty();
 	for(var b in graph.getBranchList()){
 		var branch = graph.getBranchList()[b];
-		var supprButton = "<i class='glyphicon glyphicon-trash'></i>";
-		var elem = "<tr><td>"+branch.name+"</td><td>"+supprButton+"</td>";
+		var supprButton = "<button class='btn btn-warning checkoutButton' checkoutName='"+branch.name+"'>checkout</button>";
+		var branchName = (graph.currentBranch == branch.name || graph.getBranchList().length == 1) ? "<b>"+branch.name+"</b>" : branch.name;
+		var elem = "<tr><td>"+branchName+"</td><td>"+supprButton+"</td>";
+
 		$("#tableBranch").append(elem);
 	}
 }
@@ -87,6 +99,7 @@ function createGraph()
 	};
 	$.ajax({
 		type: "POST",
+		crossDomain: true,
 		url: SERVER+"/addnode",
 		data: JSON.stringify(data),
 		success: function(dataReceived, status){
@@ -100,6 +113,7 @@ function createGraph()
 		contentType: "application/json"
 	});
 
+	graph.currentBranch = "master";
 	return graph;
 
 }
@@ -142,15 +156,20 @@ function addBranchForm(graph){
 		$("#addBranchForm")[0].reset();
 		$.ajax({
 			type: "POST",
+			crossDomain: true,
 			url: SERVER+"/newbranch",
 			data: JSON.stringify(data),
 			success: function(dataReceived, status){
 				if(status == "success"){
-					if(dataReceived.error !== undefined) alert(dataReceived.error);
+					if(dataReceived.error !== undefined)
+						alert(dataReceived.error);
 					else {
 						graph.addBranch(data.branch);
+						graph.checkout(data.branch);
 						graph.commit(data.commit_message);
 						graph.refresh();
+
+						refreshPage(graph);
 					}
 				}
 
