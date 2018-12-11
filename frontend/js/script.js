@@ -2,10 +2,13 @@ var SERVER = "http://127.0.0.1:5000"
 $(document).ready(function() {
 	prepareFrontEnd();
 
-	var data = {
+
+
+	/*
+	var data  ={
 
 	};
-	/*$.ajax({
+	$.ajax({
 		type: "POST",
 		url: SERVER+"/newbranch",
 		data: JSON.stringify(data),
@@ -19,6 +22,7 @@ $(document).ready(function() {
 		dataType: "json",
 		contentType: "application/json"
 	});*/
+
 });
 
 function prepareFrontEnd(){
@@ -67,6 +71,10 @@ function createGraph()
 		graph.setActive(commit);
 		$("#commitPanel").show();
 		$("#commitPanel_name").text(commit.message);
+		$("#commitPanel_branch").text(commit.branch.name);
+		$("#commitPanel_date").text(commit.date);
+		$("#commitPanel_SHA1").text(commit.sha1);
+		$("#commitPanel_author").text(commit.author);
 	})
 
 	/*graph.addBranch("master");
@@ -95,7 +103,8 @@ function createGraph()
 	var data = {
 		data_name : "Main branch",
 		commit_message: "Init main branch",
-		data : "d"
+		data : "d",
+		branch: "master"
 	};
 	$.ajax({
 		type: "POST",
@@ -104,8 +113,12 @@ function createGraph()
 		data: JSON.stringify(data),
 		success: function(dataReceived, status){
 			if(status == "success"){
-				graph.commit(data.commit_message);
-				graph.refresh();
+				if(dataReceived.error !== undefined)
+					alert(dataReceived.error);
+				else {
+					graph.commit(data.commit_message);
+					graph.refresh();
+				}
 			}
 
 		},
@@ -122,7 +135,9 @@ function addNodeForm(graph){
 	var data = {
 		data_name : $("#inputCommitName").val(),
 		commit_message: $("#inputCommitMessage").val(),
-		data : $("#inputCommitData").val()
+		data : $("#inputCommitData").val(),
+		author : ($("#inputCommitAuthor").val() ? $("#inputCommitAuthor").val() : "unknown"),
+		branch: graph.currentBranch
 	};
 
 	if(data.data_name != "" && data.commit_message != "" && data.commit_data != ""){
@@ -133,8 +148,12 @@ function addNodeForm(graph){
 			data: JSON.stringify(data),
 			success: function(dataReceived, status){
 				if(status == "success"){
-					graph.commit(data.commit_message);
-					graph.refresh();
+					if(dataReceived.error !== undefined)
+						alert(dataReceived.error);
+					else {
+						graph.commit(data.commit_message, "", data.author, data.data);
+						graph.refresh();
+					}
 				}
 
 			},
