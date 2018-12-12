@@ -21,6 +21,8 @@ class tree{
         if(this.branches.has(branch))
             throw "Branch "+branch+" already exists";
         else{
+            var head = this.branches.get(this.getLastWorkingBranch());
+            head.addChild(node)
             this.branches.set(branch, node);
         }
     }
@@ -55,6 +57,40 @@ class tree{
             branches.push(key);
         });
         return branches;
+    }
+
+    remove(branch, hash){
+        try{
+            if(this.branches.has(branch)){
+                var main_node = this.branches.get(branch);
+                if(main_node.hash == hash){
+                    if(main_node.original)
+                        throw "Cannot remove original node";
+                    if(main_node.children.length == 0){
+                        this.branches.delete(branch);
+                        throw "Removed node";
+                    }
+                    else if(main_node.children.length == 1){
+                        this.branches.set(banch, main_node.children[0]);
+                        throw "Removed node";
+                    }
+                    else{
+                        throw "Cannot remove a commit with at least 2 children";
+                    }
+                    return main_node.toJSON();
+                }
+                else{
+                    return main_node.remove(hash);
+                }
+            }
+            else{
+                throw "No branch named "+branch; 
+            }
+        }
+        catch(e){
+            return e;
+        }
+        
     }
 }
 
