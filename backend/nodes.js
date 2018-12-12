@@ -82,7 +82,14 @@ class node {
         catch(e){
             return e;
         }
-        
+    }
+
+    integrity(){
+        var hashes = this.hash;
+        this.children.forEach(function(child){
+            hashes += child.integrity();
+        })
+        return hashes;
     }
   }
 
