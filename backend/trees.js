@@ -1,3 +1,5 @@
+var md5 = require('md5');
+
 class tree{
     constructor(head){
         this.branches = new Map();
