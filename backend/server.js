@@ -126,7 +126,14 @@ app.post('/removenode', function(request, response){
 });
 
 app.get('/integrity', function(request, response){
-  response.send(main_tree.integrity());
+  try{
+    response.send(main_tree.integrity());
+  }
+  catch(e){
+    response.send({
+      "error" : e
+    });
+  }
 });
 
 app.listen(PORT, HOST);
