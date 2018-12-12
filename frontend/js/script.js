@@ -99,6 +99,7 @@ function createGraph()
 	graph.delete("Developpement");
 	//graph.delete("crise");
 	graph.checkout("master");*/
+	/*
 	graph.addBranch("master");
 	var data = {
 		data_name : "Main branch",
@@ -126,8 +127,61 @@ function createGraph()
 		contentType: "application/json"
 	});
 
-	graph.currentBranch = "master";
+	graph.currentBranch = "master";*/
+
+	$.ajax({
+		type: "GET",
+		url: SERVER+"/getallbranches",
+		success: function(data, status){
+			if(status == "success"){
+				for(var b in data)
+				{
+					var branchData = {
+						branch: data[b]
+					};
+					$.ajax({
+						type: "POST",
+						url: SERVER+"/getfullbranch",
+						data: JSON.stringify(branchData),
+						success: function(dataReceived, status){
+							if(status == "success"){
+								createBranchFromData(graph, branchData.branch, dataReceived[0]);
+							}
+
+						},
+						dataType: "json",
+						contentType: "application/json"
+					});
+					graph.addBranch(data[b]);
+				}
+				graph.currentBranch = data[0];
+				graph.checkout(graph.currentBranch);
+				refreshPage(graph);
+			}
+
+		},
+		dataType: "json",
+		contentType: "application/json"
+	});
+
 	return graph;
+
+}
+
+function createBranchFromData(graph, branch, data)
+{
+	if(data.length > 1){
+		createBranchFromData(graph, branch, data[1]);
+		graph.checkout(branch);
+		graph.commit(data[0].commit_message, data[0].hash , data[0].data);
+		graph.refresh();
+	}
+	else
+	{
+		graph.checkout(branch);
+		graph.commit(data[0].commit_message, data[0].hash , data[0].data);
+		graph.refresh();
+	}
 
 }
 
