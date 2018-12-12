@@ -1,7 +1,7 @@
 var SERVER = "http://127.0.0.1:5000"
 $(document).ready(function() {
 	prepareFrontEnd();
-
+	setInterval(checkUpdate, 2000);
 
 
 	/*
@@ -164,6 +164,18 @@ function createGraph()
 		contentType: "application/json"
 	});
 
+	$.ajax({
+		type: "GET",
+		url: SERVER+"/integrity",
+		success: function(data, status){
+			if(status == "success"){
+				console.log(data);
+			}
+
+		},
+		dataType: "json",
+		contentType: "application/json"
+	});
 	return graph;
 
 }
@@ -255,4 +267,9 @@ function addBranchForm(graph){
 			contentType: "application/json"
 		});
 	}
+}
+
+function checkUpdate()
+{
+	console.log('update');
 }

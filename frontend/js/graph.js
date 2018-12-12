@@ -36,6 +36,7 @@ class Graph
 		this.branchList = [];
 		this.clickOnCommitCallback = null;
 		this.currentBranch = "";
+		this.hash = "";
 	}
 
 	getBranchList(){
