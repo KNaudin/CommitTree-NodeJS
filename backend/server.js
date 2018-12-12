@@ -17,7 +17,10 @@ app.get('/', (req, res) => {
 
 app.use(bodyParser.json());
 
-var main_tree = undefined;
+var init_node = new node("[init]", "init", "init");
+var main_tree = new tree(init_node);
+
+console.log(main_tree.getAllBranches());
 
 // Adds a node to the tree and in the correct branch
 // If the branch doesn't exist, it will return an error
@@ -27,14 +30,10 @@ app.post('/addnode', function(request, response){
       throw "No commit message or data name or data found in sent JSON object";
 
     var new_node = new node(request.body.commit_message, request.body.data_name, request.body.data);
-    if(main_tree == undefined){
-      main_tree = new tree(new_node);
-    }
-    else{
-      if(request.body.branch == undefined)
-        throw "No branch found in sent JSON object";
-      main_tree.addNode(request.body.branch, new_node);
-    }
+    if(request.body.branch == undefined)
+      throw "No branch found in sent JSON object";
+    main_tree.addNode(request.body.branch, new_node);
+
     response.send(new_node.toJSON());
   }
   catch(e){
@@ -61,11 +60,22 @@ app.post('/gethead', function(request, response){
 
 // Get all nodes in a branch, starting from the head
 // If the branch doesn't exist, it will return an error
-app.post('/getallbranch', function(request, response){
+app.post('/getfullbranch', function(request, response){
   try{
     if(request.body.branch == undefined)
         throw "No branch found in sent JSON object";
     response.send(main_tree.getAllBranch(request.body.branch));
+  }
+  catch(e){
+    response.send({
+      "error" : e
+    });
+  }
+});
+
+app.get('/getallbranches', function(request, response){
+  try{
+    response.send(main_tree.getAllBranches());
   }
   catch(e){
     response.send({

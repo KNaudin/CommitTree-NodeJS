@@ -48,6 +48,14 @@ class tree{
     getLastWorkingBranch(){
         return this.last_working_branch;
     }
+
+    getAllBranches(){
+        var branches = [];
+        this.branches.forEach(function(value, key){
+            branches.push(key);
+        });
+        return branches;
+    }
 }
 
 module.exports = tree;
