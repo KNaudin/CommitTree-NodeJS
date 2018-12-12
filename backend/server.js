@@ -125,5 +125,9 @@ app.post('/removenode', function(request, response){
   }
 });
 
+app.get('/integrity', function(request, response){
+  response.send(main_tree.integrity());
+});
+
 app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);

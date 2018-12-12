@@ -92,6 +92,14 @@ class tree{
         }
         
     }
+
+    integrity(){
+        var hashes = "";
+        this.branches.forEach(function(head){
+            hashes += head.integrity();
+        });
+        return md5(hashes);
+    }
 }
 
 module.exports = tree;
