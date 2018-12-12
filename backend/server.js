@@ -128,6 +128,20 @@ app.post('/removenode', function(request, response){
 app.get('/integrity', function(request, response){
   try{
     response.send(main_tree.integrity());
+    console.log("sent");
+  }
+  catch(e){
+    response.send({
+      "error" : e
+    });
+  }
+});
+
+app.post('/merge', function(request, response){
+  try{
+    if(request.body.branchfrom == undefined || request.body.branchto == undefined)
+      throw "Branches were not specified";
+    response.send(main_tree.merge(request.body.branchfrom, request.body.branchto));
   }
   catch(e){
     response.send({

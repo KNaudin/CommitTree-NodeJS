@@ -100,6 +100,25 @@ class tree{
         });
         return md5(hashes);
     }
+
+    merge(branch_from, branch_to){
+        try{
+            if(this.branches.has(branch_from) && this.branches.has(branch_to)){
+                var node = new node("merged "+branch_from+" with "+branch_to, "merge", "merge");
+                node.addChild(this.branches.get(branch_from));
+                node.addChild(this.branches.get(branch_to));
+                node.setOwner(branch_to);
+                this.branches.set(branch_to, node);
+                return node;
+            }
+            else{
+                throw "Branches don't exist";
+            }
+        }
+        catch(e){
+            return e;
+        }
+    }
 }
 
 module.exports = tree;
