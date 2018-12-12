@@ -1,7 +1,6 @@
 var SERVER = "http://127.0.0.1:5000"
 $(document).ready(function() {
 	prepareFrontEnd();
-	setInterval(checkUpdate, 2000);
 
 
 	/*
@@ -50,6 +49,7 @@ function prepareFrontEnd(){
 	});
 
 	refreshPage(graph);
+	//setInterval(function(){checkUpdate(graph);}, 1000);
 }
 
 function refreshPage(graph){
@@ -74,7 +74,7 @@ function createGraph()
 		$("#commitPanel_branch").text(commit.branch.name);
 		$("#commitPanel_date").text(commit.date);
 		$("#commitPanel_SHA1").text(commit.sha1);
-		$("#commitPanel_author").text(commit.author);
+
 	})
 
 	/*graph.addBranch("master");
@@ -134,8 +134,10 @@ function createGraph()
 		url: SERVER+"/getallbranches",
 		success: function(data, status){
 			if(status == "success"){
+				//console.log(data);
 				for(var b in data)
 				{
+					graph.addBranch(data[b]);
 					var branchData = {
 						branch: data[b]
 					};
@@ -152,7 +154,7 @@ function createGraph()
 						dataType: "json",
 						contentType: "application/json"
 					});
-					graph.addBranch(data[b]);
+
 				}
 				graph.currentBranch = data[0];
 				graph.checkout(graph.currentBranch);
@@ -167,11 +169,10 @@ function createGraph()
 	$.ajax({
 		type: "GET",
 		url: SERVER+"/integrity",
-		success: function(data, status){
+		success: function(dataReceived, status){
 			if(status == "success"){
-				console.log(data);
+				graph.hash = dataReceived;
 			}
-
 		},
 		dataType: "json",
 		contentType: "application/json"
@@ -180,21 +181,25 @@ function createGraph()
 
 }
 
+var hashs = [];
 function createBranchFromData(graph, branch, data)
 {
 	if(data.length > 1){
-		createBranchFromData(graph, branch, data[1]);
-		graph.checkout(branch);
-		graph.commit(data[0].commit_message, data[0].hash , data[0].data);
-		graph.refresh();
+		if(hashs.indexOf(data[0].hash) == -1){
+			createBranchFromData(graph, branch, data[1]);
+			graph.checkout(data[0].branch);
+			graph.commit(data[0].commit_message, data[0].hash , data[0].data);
+			hashs.push(data[0].hash);
+			graph.refresh();
+		}
 	}
-	else
+	else if(hashs.indexOf(data[0].hash) == -1)
 	{
-		graph.checkout(branch);
+		graph.checkout(data[0].branch);
 		graph.commit(data[0].commit_message, data[0].hash , data[0].data);
+		hashs.push(data[0].hash);
 		graph.refresh();
 	}
-
 }
 
 function addNodeForm(graph){
@@ -202,7 +207,6 @@ function addNodeForm(graph){
 		data_name : $("#inputCommitName").val(),
 		commit_message: $("#inputCommitMessage").val(),
 		data : $("#inputCommitData").val(),
-		author : ($("#inputCommitAuthor").val() ? $("#inputCommitAuthor").val() : "unknown"),
 		branch: graph.currentBranch
 	};
 
@@ -217,7 +221,7 @@ function addNodeForm(graph){
 					if(dataReceived.error !== undefined)
 						alert(dataReceived.error);
 					else {
-						graph.commit(data.commit_message, "", data.author, data.data);
+						graph.commit(data.commit_message, "", data.data);
 						graph.refresh();
 					}
 				}
@@ -269,7 +273,21 @@ function addBranchForm(graph){
 	}
 }
 
-function checkUpdate()
+function checkUpdate(graph)
 {
-	console.log('update');
+	$.ajax({
+		type: "GET",
+		url: SERVER+"/integrity",
+		success: function(dataReceived, status){
+			if(status == "success"){
+				if(graph.hash != dataReceived.integrity){
+					console.log("integrity update");
+					//createGraph();
+					graph.hash = dataReceived.integrity;
+				}
+			}
+		},
+		dataType: "json",
+		contentType: "application/json"
+	});
 }

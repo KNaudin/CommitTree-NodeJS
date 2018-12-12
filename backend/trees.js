@@ -24,7 +24,8 @@ class tree{
             throw "Branch "+branch+" already exists";
         else{
             var head = this.branches.get(this.getLastWorkingBranch());
-            head.addChild(node)
+            node.setOwner(branch);
+            node.addChild(head);
             this.branches.set(branch, node);
         }
     }
@@ -86,13 +87,13 @@ class tree{
                 }
             }
             else{
-                throw "No branch named "+branch; 
+                throw "No branch named "+branch;
             }
         }
         catch(e){
             return e;
         }
-        
+
     }
 
     integrity(){

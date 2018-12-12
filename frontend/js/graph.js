@@ -59,13 +59,12 @@ class Graph
 
 	}
 
-	commit(msg="No text", sha1="", author="unknown", data=""){
+	commit(msg="No text", sha1="", data=""){
 		if(this.branchList.length)
 		{
 			var that = this;
 			this.data.commit({
 				message: msg,
-				author: author,
 				onClick: function(commit) {
 					that.eventClickOnCommit(commit);
 				}

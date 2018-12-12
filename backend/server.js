@@ -127,8 +127,7 @@ app.post('/removenode', function(request, response){
 
 app.get('/integrity', function(request, response){
   try{
-    response.send(main_tree.integrity());
-    console.log("sent");
+    response.send({"integrity":main_tree.integrity()});
   }
   catch(e){
     response.send({

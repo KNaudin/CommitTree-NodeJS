@@ -39,7 +39,8 @@ class node {
             "commit_message" : this.commit_message,
             "data_name" : this.data_name,
             "data" : this.data,
-            "hash" : this.hash
+            "hash" : this.hash,
+            "branch": this.branch
         };
     }
 
