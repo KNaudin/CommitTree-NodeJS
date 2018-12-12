@@ -18,9 +18,12 @@ app.get('/', (req, res) => {
 app.use(bodyParser.json());
 
 var init_node = new node("[init]", "init", "init");
+init_node.original = true;
 var main_tree = new tree(init_node);
 
 console.log(main_tree.getAllBranches());
+console.log(main_tree.getAllBranch("master"));
+console.log(main_tree.remove("master", '373bc0a7cda5676ce0ac4e1352a8373d'));
 
 // Adds a node to the tree and in the correct branch
 // If the branch doesn't exist, it will return an error
@@ -101,6 +104,19 @@ app.post('/newbranch', function(request, response){
       main_tree.addBranch(request.body.branch, new_node);
     }
     response.send(new_node.toJSON());
+  }
+  catch(e){
+    response.send({
+      "error" : e
+    });
+  }
+});
+
+app.post('/removenode', function(request, response){
+  try{
+    if(request.body.branch == undefined || request.body.hash == undefined)
+      throw "No branch or hash specified";
+    response.send(main_tree.remove(request.body.branch, request.body.hash));
   }
   catch(e){
     response.send({
