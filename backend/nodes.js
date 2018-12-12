@@ -1,20 +1,20 @@
+var md5 = require('md5');
+
 class node {
     constructor(commit_message, data_name, data) {
       this.commit_message = commit_message;
       this.data_name = data_name;
       this.data = data;
-      this.hash = "";
       this.children = [];
       this.branch = "master";
+      this.original = false;
+      this.computeHash();
     }
 
     addChild(child){
-        if(this.children.length < 2)
-        {
-            this.children.push(child);
-            return child;
-        }
-        throw "Couldn't add child node as the parent node already has 2 children";
+        this.children.push(child);
+        this.computeHash();
+        return child;
     }
 
     getChildren(){
@@ -41,6 +41,48 @@ class node {
             "data" : this.data,
             "hash" : this.hash
         };
+    }
+
+    computeHash(){
+        if(this.children.length == 0){
+            this.hash = md5(this.data+this.branch);
+        }
+        else{
+            var datas = this.data;
+            this.children.forEach(function(child){
+                datas += child.data+child.owner;
+            })
+            this.hash = md5(datas);
+        }
+    }
+
+    remove(hash){
+        try{
+            for(i=0;i<this.children.length;i++){
+                if(this.children[i].hash == hash){
+                    if(this.children[i].children.length == 0){
+                        this.children.splice(i, 1);
+                        throw "Removed node";
+                    }
+                    else if(this.children[i].children.length == 1){
+                        this.children.push(this.children[i].children[0]);
+                        this.children.splice(i, 1);
+                        throw "Removed node";
+                    }
+                    else{
+                        throw "Cannot remove a commit with at least 2 children";
+                    }
+                }
+                else{
+                    this.children[i].remove(hash);
+                }
+            }
+            this.computeHash();
+        }
+        catch(e){
+            return e;
+        }
+        
     }
   }
 
